@@ -1,0 +1,136 @@
+/* styles.css */
+
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles to match the gradient background */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #000000;
+        background-image: url("https://www.transparenttextures.com/patterns/dark-mosaic.png");
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.logo-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px;
+}
+
+.logo {
+    max-width: 200px;
+    /* Adjust the size as needed */
+    height: auto;
+}
+
+/* Container for the form */
+.container {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Heading styles */
+h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: white;
+    font-family: "Playfair Display", serif;
+    margin-top: -100px;
+    padding-bottom: 70px;
+}
+
+/* Paragraph and link styles */
+p {
+    color: white;
+    font-family: "Playfair Display", serif;
+    font-weight: 300;
+    /* White text for the paragraph */
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+a {
+    color: white;
+    /* White link color */
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: none;
+    /* Remove underline on hover */
+}
+
+/* Form field styles */
+.form-field {
+    margin-bottom: 15px;
+}
+
+/* Input field styles to match the black background with white text */
+input[type="text"],
+input[type="password"] {
+    width: 70%;
+    padding: 10px;
+    border: none;
+    background: #1c2526;
+    font-family: "Playfair Display", serif;
+    font-weight: 400;
+    /* Dark background for input fields */
+    border-radius: 4px;
+    color: white;
+    /* White text in input fields */
+    font-size: 1em;
+}
+
+/* Placeholder text color */
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: white;
+    /* White placeholder text */
+    width: 70%;
+    opacity: 0.7;
+    /* Slightly transparent */
+}
+
+/* Button styles to match the white button with black text */
+button {
+    background-color: white;
+    /* White background for the button */
+    color: black;
+    /* Black text on the button */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Playfair Display", serif;
+    font-weight: 300;
+    font-size: 1em;
+    width: 50%;
+    text-transform: uppercase;
+    /* Match the "SIGN UP" text style */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #e0e0e0;
+    /* Slightly darker white on hover */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+    }
+}

@@ -1,0 +1,474 @@
+/* static/index.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #000000;
+    background-image: url("https://www.transparenttextures.com/patterns/dark-mosaic.png");
+    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+    color: #ffffff;
+    line-height: 1.5;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.page-content {
+    opacity: 0;
+    transform: scale(0.8);
+    /* Start zoomed out */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    /* Smooth transition */
+}
+
+.page-content.loaded {
+    opacity: 1;
+    transform: scale(1);
+    /* Zoom in to normal size */
+}
+
+body[data-theme="dark"] {
+    background-color: #202123;
+    color: #d1d5db;
+}
+
+.logo-container {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 15px;
+    width: 100%;
+    /* Allow full width for centering */
+    max-width: 400px;
+    /* Increased for a larger container */
+    transition: margin-right 0.3s ease, transform 0.3s ease;
+    /* Smooth transition for movement */
+    text-align: center;
+    /* Center the logo within the container */
+}
+
+body:has(#code-display-container[style*="display: block"]) .logo-container {
+    margin-right: 40%;
+    /* Shift left by matching code-display-container width */
+    transform: translateX(-50%) translateX(-20px);
+    /* Adjust for padding/margin offset */
+}
+
+.logo {
+    max-width: 300px;
+    /* Increased from 250px to make it bigger */
+    height: auto;
+}
+
+/* Profile Container */
+.profile-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.profile-icon {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: rgb(0, 0, 0);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+}
+
+body[data-theme="dark"] .dropdown {
+    background-color: #40414f;
+}
+
+.dropdown a,
+.dropdown button {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+body[data-theme="dark"] .dropdown a,
+body[data-theme="dark"] .dropdown button {
+    color: #d1d5db;
+}
+
+.dropdown a:hover,
+.dropdown button:hover {
+    background-color: #f0f0f0;
+}
+
+body[data-theme="dark"] .dropdown a:hover,
+body[data-theme="dark"] .dropdown button:hover {
+    background-color: #50515f;
+}
+
+/* Sidebar (Explore Grid) */
+.explore-grid {
+    width: 260px;
+    background-color: #1b1a1a;
+    color: #ffffff;
+    padding: 10px;
+    overflow-y: auto;
+    border-right: 1px solid #e5e5e5;
+    flex-shrink: 0;
+}
+
+body[data-theme="dark"] .explore-grid {
+    background-color: #343541;
+    border-left: 1px solid #40414f;
+}
+
+.project-card {
+    background-color: #292929;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+body[data-theme="dark"] .project-card {
+    background-color: #40414f;
+}
+
+.project-card:hover {
+    background-color: #4e4e4e;
+}
+
+body[data-theme="dark"] .project-card:hover {
+    background-color: #50515f;
+}
+
+.project-info h3 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.project-info p {
+    font-size: 12px;
+    color: #666;
+}
+
+body[data-theme="dark"] .project-info p {
+    color: #a0a0a0;
+}
+
+.username {
+    font-size: 12px;
+    color: #888;
+    display: block;
+    margin-top: 4px;
+}
+
+body[data-theme="dark"] .username {
+    color: #b0b0b0;
+}
+
+/* Main Content */
+.header {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+    /* Ensure proper positioning context */
+    width: 100%;
+    /* Full width by default */
+    transition: margin-right 0.3s ease;
+    /* Smooth transition when code container appears */
+}
+
+body:has(#code-display-container[style*="display: block"]) .header {
+    margin-right: 40%;
+    /* Matches the width of code-display-container */
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Customize Form - Positioned above input-section */
+#customize-form {
+    display: none;
+    margin-top: -630px;
+    margin-bottom: 20px;
+    background-color: #1a1a1b;
+    padding: 15px;
+    border-radius: 4px;
+    width: 50%;
+    /* Adjust based on preference */
+    max-width: 100%;
+    transition: max-width 0.3s ease;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    /* Optional: Centers inline content inside */
+}
+
+body[data-theme="dark"] #customize-form {
+    background-color: #343541;
+}
+
+body:has(#code-display-container[style*="display: block"]) #customize-form {
+    max-width: calc(100% - 20px);
+    /* Resize with input-section */
+}
+
+/* Input Section - Keep original position */
+.input-section {
+    max-width: 100%;
+    /* Initially full width */
+    margin-top: 600px;
+    /* Keep original large top margin */
+    transition: max-width 0.3s ease;
+    box-shadow: 0;
+    /* Smooth resizing */
+}
+
+body:has(#code-display-container[style*="display: block"]) .input-section {
+    max-width: calc(100% - 20px);
+    /* Leaves space for code-display-container (40% width + padding) */
+}
+
+textarea {
+    width: 100%;
+    /* Always takes full width of its container */
+    min-height: 100px;
+    padding: 10px;
+    padding-left: 15px;
+    border: 3px solid #dcdcdc;
+    font-size: 16px;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    border-radius: 25px;
+    resize: none;
+    background-color: rgb(27, 27, 27);
+    color: #ffffff;
+    box-sizing: border-box;
+    /* Ensure padding doesn’t affect width */
+}
+
+body[data-theme="dark"] textarea {
+    background-color: #40414f;
+    border-color: #50515f;
+    color: #d1d5db;
+}
+
+.button-group {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+input[type="submit"],
+button {
+    padding: 8px 16px;
+    background-color: white;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+input[type="submit"]:hover,
+button:hover {
+    background-color: #e0e0e0;
+}
+
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+body[data-theme="dark"] .form-field input,
+body[data-theme="dark"] .form-field select {
+    background-color: #40414f;
+    border-color: #50515f;
+    color: #d1d5db;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+}
+
+.form-field input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+}
+
+body[data-theme="dark"] .form-field input[type="file"] {
+    background-color: #40414f;
+    border-color: #50515f;
+    color: #d1d5db;
+}
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #10a37f;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* API Key Modal */
+#api-key-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+}
+
+body[data-theme="dark"] .modal-content {
+    background: #40414f;
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+body[data-theme="dark"] .modal-content input {
+    background-color: #50515f;
+    border-color: #60616f;
+    color: #d1d5db;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#code-display-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    /* Fixed width for split screen */
+    height: 100vh;
+    /* Full height */
+    background-color: #000000;
+        background-image: url("https://www.transparenttextures.com/patterns/dark-mosaic.png");
+    padding: 20px;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow-y: auto;
+    display: none;
+}
+
+.code-output {
+    font-family: 'Courier New', Courier, monospace;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-block {
+    background: #080808;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    flex-grow: 1;
+    /* Takes available space */
+    overflow-y: auto;
+}
+
+.button-group {
+    margin-top: 20px;
+    text-align: right;
+}
+
+body[data-theme="dark"] #code-display-container {
+    background: #202022;
+    color: #fff;
+}
+
+body[data-theme="dark"] .code-block {
+    background: #222;
+    color: #0f0;
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Style for the video overlay */
+        #success-video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 1000;
+        }
+
+        #success-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Style for skip video link */
+        #skip-video {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        #skip-video:hover {
+            color: #ddd;
+            background: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='applogo.png') }}" alt="App Logo" class="logo">
+    </div>
+    <div class="container">
+        <h1>Create New Account</h1>
+        <form id="signup-form" method="POST" action="/signup">
+            <div class="form-field">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-field">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="/login">Login</a></p>
+    </div>
+
+    <!-- Video container to be displayed on successful signup -->
+    <div id="success-video-container">
+        <video id="success-video">
+            <source src="{{ url_for('static', filename='register.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Skip video link -->
+    <a href="#" id="skip-video">Skip Video</a>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetch('/signup', {
+                method: 'POST',
+                body: new FormData(this),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => { throw new Error(data.error || 'Signup failed'); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.redirect) {
+                        // Show the video and skip link
+                        const videoContainer = document.getElementById('success-video-container');
+                        const video = document.getElementById('success-video');
+                        const skipLink = document.getElementById('skip-video');
+                        videoContainer.style.display = 'block';
+                        skipLink.style.display = 'block';
+
+                        // Hide the signup form and logo
+                        document.querySelector('.container').style.display = 'none';
+                        document.querySelector('.logo-container').style.display = 'none';
+
+                        // Play the video
+                        video.play();
+
+                        // Redirect after the video ends
+                        video.onended = function () {
+                            window.location.href = data.redirect;
+                        };
+
+                        // Set up skip link functionality
+                        skipLink.href = data.redirect;
+                    }
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        });
+    </script>
+</body>
+
+</html>

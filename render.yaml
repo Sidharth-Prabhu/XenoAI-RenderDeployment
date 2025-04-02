@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: flutter-flask-mvp
+    env: docker
+    repo: https://github.com/your-repo
+    plan: free
+    autoDeploy: true

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Your App</title>
+    <link rel="stylesheet" href="/static/download.css">
+</head>
+
+<body>
+    <div class="profile-container">
+        <button class="profile-icon" onclick="toggleDropdown()">👤</button>
+        <div class="dropdown" id="profile-dropdown">
+            <span style="padding: 8px 12px; display: block;">{{ username }}</span>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='applogo.png') }}" alt="App Logo" class="logo">
+    </div>
+    <div class="container">
+        <h1>Your App is Ready!</h1>
+        <p>Click the link below to download your generated APK file:</p>
+        <a href="{{ apk_path }}" download="{{ project_name }}.apk">Download APK</a>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function (e) {
+            const profileContainer = document.querySelector('.profile-container');
+            if (!profileContainer.contains(e.target)) {
+                document.getElementById('profile-dropdown').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+<footer>
+    <p>Made by Team SyntaxError404</p>
+</footer>
+
+</html>

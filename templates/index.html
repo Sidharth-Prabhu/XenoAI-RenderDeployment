@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XenoAI App Builder</title>
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="profile-container">
+        {% if username %}
+        <button class="profile-icon" onclick="toggleDropdown()">👤</button>
+        <div class="dropdown" id="profile-dropdown">
+            <span style="padding: 8px 12px; display: block;">{{ username }}</span>
+            <!-- <button onclick="toggleTheme()">Dark Mode 🌙</button> -->
+            <a href="/logout">Logout</a>
+        </div>
+        {% else %}
+        <div class="dropdown" id="profile-dropdown" style="display: block;">
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="explore-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <!-- <img src="/assets/android.png" alt="Project Preview" /> -->
+            <div class="project-info">
+                <h3>{{ project.app_name }}</h3>
+                <p>Created on {{ project.created_at[:10] }}</p>
+                <span class="username">by {{ project.username }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="header">
+        <h1>XenoAI V1.0.12</h1>
+        {% if username %}
+        <form id="generate-form" method="POST" action="/generate" class="input-section">
+            <textarea id="prompt" name="prompt" placeholder="Create your own app (e.g., A simple todo list app)"
+                required></textarea>
+            <div class="button-group">
+                <input type="submit" value="Generate App">
+                <button type="button" id="customize-btn">Customize</button>
+            </div>
+            <!-- In the customize-form div, add this new form-field before the button-group -->
+            <div id="customize-form">
+                <div class="form-field">
+                    <label for="app-name">App Name:</label>
+                    <input type="text" id="app-name" name="app_name" value="GeneratedApp">
+                </div>
+                <div class="form-field">
+                    <label for="app-version">App Version:</label>
+                    <input type="text" id="app-version" name="app_version" value="1.0.0">
+                </div>
+                <div class="form-field">
+                    <label for="package-name">Package Name:</label>
+                    <input type="text" id="package-name" name="package_name" value="com.example.generatedapp">
+                </div>
+                <div class="form-field">
+                    <label for="build-type">Build Type:</label>
+                    <select id="build-type" name="build_type">
+                        <option value="debug">Debug</option>
+                        <option value="release">Release</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="app-icon">App Icon (PNG, 512x512 recommended):</label>
+                    <input type="file" id="app-icon" name="app_icon" accept="image/png">
+                </div>
+                <div class="button-group">
+                    <input type="submit" value="Generate with Custom Settings">
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <p>Please <a href="/login">login</a> or <a href="/signup">sign up</a> to generate an app.</p>
+        {% endif %}
+    </div>
+
+    <div id="code-display-container">
+        <div class="code-output">
+            <h2>Building your app...</h2>
+            <pre id="code-output" class="code-block"></pre>
+            <div class="button-group">
+                <button id="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="api-key-modal">
+        <div class="modal-content">
+            <h2>API Key Required</h2>
+            <p>Your app idea requires an API key. Please enter it below:</p>
+            <input type="text" id="api-key-input" placeholder="Enter API key" required>
+            <div class="button-group">
+                <button id="submit-api-key">Submit</button>
+                <button id="cancel-api-key">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+            window.addEventListener('DOMContentLoaded', () => {
+                    const pageContent = document.querySelector('.page-content');
+                    pageContent.classList.add('loaded');
+            });
+
+        // Example prompts for the typing animation
+            const examplePrompts = [
+                "Create a simple todo list app",
+                "Build a weather app with real-time updates",
+                "Generate a calculator app with basic functions",
+                "Design a note-taking app with categories"
+            ];
+
+            let currentPromptIndex = 0;
+            let isTyping = true;
+            let placeholderText = '';
+            const promptTextarea = document.getElementById('prompt');
+
+            // Function to simulate typing for placeholder
+            function typePlaceholder(prompt, element, speed = 100, callback) {
+                let i = 0;
+                placeholderText = '';
+
+                function type() {
+                    if (i < prompt.length) {
+                        placeholderText += prompt.charAt(i);
+                        element.setAttribute('placeholder', placeholderText);
+                        i++;
+                        setTimeout(type, speed);
+                    } else if (callback) {
+                        setTimeout(callback, 1000); // Pause before moving to next prompt
+                    }
+                }
+                type();
+            }
+
+            // Function to erase placeholder
+            function erasePlaceholder(element, speed = 50, callback) {
+                function erase() {
+                    if (placeholderText.length > 0) {
+                        placeholderText = placeholderText.slice(0, -1);
+                        element.setAttribute('placeholder', placeholderText);
+                        setTimeout(erase, speed);
+                    } else if (callback) {
+                        callback();
+                    }
+                }
+                erase();
+            }
+
+            // Cycle through example prompts
+            function cyclePrompts() {
+                if (!promptTextarea.value) { // Only run if textarea is empty
+                    const currentPrompt = examplePrompts[currentPromptIndex];
+                    typePlaceholder(currentPrompt, promptTextarea, 100, () => {
+                        erasePlaceholder(promptTextarea, 50, () => {
+                            currentPromptIndex = (currentPromptIndex + 1) % examplePrompts.length;
+                            cyclePrompts();
+                        });
+                    });
+                }
+            }
+
+            // Start the animation when the page loads
+            window.addEventListener('DOMContentLoaded', () => {
+                cyclePrompts();
+            });
+
+            // Stop animation when user focuses on the textarea
+            promptTextarea.addEventListener('focus', () => {
+                promptTextarea.setAttribute('placeholder', '');
+            });
+
+            // Restart animation if textarea is emptied
+            promptTextarea.addEventListener('input', () => {
+                if (!promptTextarea.value) {
+                    cyclePrompts();
+                }
+            });
+
+        document.getElementById('customize-btn') && document.getElementById('customize-btn').addEventListener('click', function () {
+            const form = document.getElementById('customize-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        let formData;
+            let isCancelled = false;
+
+            document.getElementById('generate-form') && document.getElementById('generate-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                formData = new FormData(this);
+                const codeContainer = document.getElementById('code-display-container');
+                codeContainer.style.display = 'block';
+                document.getElementById('code-output').textContent = '';
+                isCancelled = false;
+                generateAndBuild(formData);
+            });
+
+            function typeText(element, text, speed = 10, callback) {
+                let i = 0;
+                function type() {
+                    if (isCancelled) return;
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        // Scroll to the bottom of the element
+                        element.scrollTop = element.scrollHeight;
+                        setTimeout(type, speed);
+                    } else if (callback) {
+                        callback();
+                    }
+                }
+                type();
+            }
+
+            function generateAndBuild(data) {
+                fetch('/generate', {
+                    method: 'POST',
+                    body: data,
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(`Server error: ${response.status} - ${text}`); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.requires_api_key) {
+                            const modal = document.getElementById('api-key-modal');
+                            modal.style.display = 'flex';
+                            document.getElementById('code-display-container').style.display = 'none';
+                        } else if (data.code) {
+                            const codeOutput = document.getElementById('code-output');
+                            codeOutput.textContent = '';
+                            // Show typing animation and start build simultaneously
+                            typeText(codeOutput, data.code, 10);
+                            // Automatically trigger build
+                            formData.append('continue_build', 'true');
+                            fetch('/generate', {
+                                method: 'POST',
+                                body: formData,
+                            })
+                                .then(response => response.json())
+                                .then(buildData => {
+                                    if (buildData.redirect && !isCancelled) {
+                                        window.location.href = buildData.redirect;
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Build Error:', error);
+                                    if (!isCancelled) {
+                                        alert('Failed to build the app.');
+                                    }
+                                });
+                        } else if (data.redirect) {
+                            window.location.href = data.redirect;
+                        } else {
+                            throw new Error('Invalid response');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error.message);
+                        document.getElementById('code-display-container').style.display = 'none';
+                        alert(`An error occurred: ${error.message}`);
+                    });
+            }
+
+            document.getElementById('submit-api-key') && document.getElementById('submit-api-key').addEventListener('click', function () {
+                const apiKey = document.getElementById('api-key-input').value.trim();
+                if (apiKey) {
+                    formData.append('api_key', apiKey);
+                    document.getElementById('api-key-modal').style.display = 'none';
+                    document.getElementById('code-display-container').style.display = 'block';
+                    generateAndBuild(formData);
+                } else {
+                    alert('Please enter a valid API key.');
+                }
+            });
+
+            document.getElementById('cancel-btn') && document.getElementById('cancel-btn').addEventListener('click', function () {
+                isCancelled = true;
+                document.getElementById('code-display-container').style.display = 'none';
+            });
+    </script>
+</body>
+
+</html>

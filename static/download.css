@@ -1,0 +1,158 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #ffffff;
+    --button-bg: white;
+    --button-hover: #e0e0e0;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --button-bg: #10a37f;
+    --button-hover: #0d8c6b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #000000;
+        background-image: url("https://www.transparenttextures.com/patterns/dark-mosaic.png");
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.logo-container {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px;
+}
+
+.logo {
+    max-width: 200px;
+    /* Adjust the size as needed */
+    height: auto;
+}
+
+.container {
+    max-width: 700px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: clamp(1.5em, 5vw, 1.8em);
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+a {
+    display: inline-block;
+    background-color: var(--button-bg);
+    color: rgb(0, 0, 0);
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+
+a:hover {
+    background-color: var(--button-hover);
+}
+
+.profile-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.profile-icon {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #000000;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-color);
+    border: 1px solid var(--input-bg);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+}
+
+.dropdown a,
+.dropdown button {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #000;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown a:hover,
+.dropdown button:hover {
+    background: var(--input-bg);
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    h1 {
+        margin-bottom: 15px;
+    }
+
+    p {
+        font-size: 0.95em;
+        margin-bottom: 15px;
+    }
+
+    a {
+        padding: 12px 20px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .profile-container {
+        top: 8px;
+        right: 8px;
+    }
+
+    .profile-icon {
+        font-size: 1.3em;
+    }
+}
